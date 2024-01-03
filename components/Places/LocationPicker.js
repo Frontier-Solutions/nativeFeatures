@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import {
+  useNavigation,
+  useRoute,
+  useIsFocused,
+} from "@react-navigation/native";
 import { StyleSheet, View, Image, Text, Alert } from "react-native";
 import {
   getCurrentPositionAsync,
@@ -13,10 +17,24 @@ import { getMapPreview } from "../../util/location";
 
 function LocationPicker() {
   const [pickedLocation, setPickedLocation] = useState();
+  const isFocused = useIsFocused(); //Will need this hook to detect activity when the screen is not recreated, eg when returning from another page in the stack
 
   const navigation = useNavigation();
+  const route = useRoute();
+
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
+
+  useEffect(() => {
+    if (isFocused && route.params) {
+      const mapPickedLocation = {
+        lat: route.params.pickedLat,
+        lng: route.params.pickedLng,
+      };
+
+      setPickedLocation(mapPickedLocation);
+    }
+  }, [route, isFocused]); //isFocused is a useEffect dependency will trigger this side effect when the screen is focused.
 
   async function verifyPermissions() {
     if (
