@@ -15,7 +15,7 @@ import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import { getMapPreview } from "../../util/location";
 
-function LocationPicker() {
+function LocationPicker({ onLocationPicked }) {
   const [pickedLocation, setPickedLocation] = useState();
   const isFocused = useIsFocused(); //Will need this hook to detect activity when the screen is not recreated, eg when returning from another page in the stack
 
@@ -35,6 +35,10 @@ function LocationPicker() {
       setPickedLocation(mapPickedLocation);
     }
   }, [route, isFocused]); //isFocused is a useEffect dependency will trigger this side effect when the screen is focused.
+
+  useEffect(() => {
+    onLocationPicked(pickedLocation);
+  }, [pickedLocation, onLocationPicked]);
 
   async function verifyPermissions() {
     if (
@@ -77,7 +81,6 @@ function LocationPicker() {
   let locationPreview = <Text>Take a picture first!</Text>;
 
   if (pickedLocation) {
-    console.log(getMapPreview(pickedLocation.lat, pickedLocation.lng));
     locationPreview = (
       <Image
         style={styles.image}
