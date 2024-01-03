@@ -1,4 +1,6 @@
-import { StyleSheet, View, Image, Text } from "react-native";
+import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, View, Image, Text, Alert } from "react-native";
 import {
   getCurrentPositionAsync,
   useForegroundPermissions,
@@ -7,12 +9,12 @@ import {
 
 import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
-import { useState } from "react";
 import { getMapPreview } from "../../util/location";
 
 function LocationPicker() {
   const [pickedLocation, setPickedLocation] = useState();
 
+  const navigation = useNavigation();
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
 
@@ -50,7 +52,9 @@ function LocationPicker() {
     });
   }
 
-  function pickOnMapHandler() {}
+  function pickOnMapHandler() {
+    navigation.navigate("Map");
+  }
 
   let locationPreview = <Text>Take a picture first!</Text>;
 
@@ -70,10 +74,10 @@ function LocationPicker() {
     <View>
       <View style={styles.mapPreview}>{locationPreview}</View>
       <View style={styles.actions}>
-        <OutlinedButton icon="location" onPress={getLocationHandler}>
+        <OutlinedButton icon='location' onPress={getLocationHandler}>
           Locate User
         </OutlinedButton>
-        <OutlinedButton icon="map" onPress={pickOnMapHandler}>
+        <OutlinedButton icon='map' onPress={pickOnMapHandler}>
           Pick on Map
         </OutlinedButton>
       </View>
@@ -93,6 +97,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.primary100,
     borderRadius: 4,
+    overflow: "hidden",
   },
   actions: {
     flexDirection: "row",
