@@ -30,6 +30,13 @@
         {
           "cameraPermission": "Allow this app access to your camera" //IOS permissions need to be managed by us
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+          "isAndroidBackgroundLocationEnabled": true
+        }
       ]
     ]
   }
