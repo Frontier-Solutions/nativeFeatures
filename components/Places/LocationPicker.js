@@ -13,7 +13,7 @@ import {
 
 import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
-import { getMapPreview } from "../../util/location";
+import { getAddress, getMapPreview } from "../../util/location";
 
 function LocationPicker({ onLocationPicked }) {
   const [pickedLocation, setPickedLocation] = useState();
@@ -37,7 +37,17 @@ function LocationPicker({ onLocationPicked }) {
   }, [route, isFocused]); //isFocused is a useEffect dependency will trigger this side effect when the screen is focused.
 
   useEffect(() => {
-    onLocationPicked(pickedLocation);
+    async function handleLocation() {
+      if (pickedLocation) {
+        const address = await getAddress(
+          pickedLocation.lat,
+          pickedLocation.lng
+        );
+        onLocationPicked({ ...pickedLocation, address: address });
+      }
+    }
+
+    handleLocation();
   }, [pickedLocation, onLocationPicked]);
 
   async function verifyPermissions() {
@@ -95,10 +105,10 @@ function LocationPicker({ onLocationPicked }) {
     <View>
       <View style={styles.mapPreview}>{locationPreview}</View>
       <View style={styles.actions}>
-        <OutlinedButton icon='location' onPress={getLocationHandler}>
+        <OutlinedButton icon="location" onPress={getLocationHandler}>
           Locate User
         </OutlinedButton>
-        <OutlinedButton icon='map' onPress={pickOnMapHandler}>
+        <OutlinedButton icon="map" onPress={pickOnMapHandler}>
           Pick on Map
         </OutlinedButton>
       </View>
