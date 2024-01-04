@@ -11,6 +11,7 @@ import { Colors } from "./constants/colors";
 import { useEffect, useState } from "react";
 import { initSQLite } from "./util/database";
 import * as SplashScreen from "expo-splash-screen";
+import PlaceDetails from "./screens/PlaceDetails";
 
 SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
@@ -63,6 +64,13 @@ export default function App() {
             component={AddPlace}
             options={{
               title: "Add a new place",
+            }}
+          />
+          <Stack.Screen
+            name='PlaceDetails'
+            component={PlaceDetails}
+            options={{
+              title: "Loading...",
             }}
           />
           <Stack.Screen name='Map' component={Map} />

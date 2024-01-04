@@ -15,7 +15,7 @@ export function initSQLite() {
           address TEXT NOT NULL,
           lat REAL NOT NULL,
           lng REAL NOT NULL
-        )`,
+          )`,
         [], //initial values, can be left empty
         () => {
           resolve();
@@ -62,12 +62,9 @@ export function fetchPlaces() {
         `SELECT * FROM places`,
         [],
         (_, result) => {
-          console.log(result);
-
           const places = [];
 
           for (const place of result.rows._array) {
-            console.log(place);
             places.push(
               new Place(
                 place.title,
@@ -83,6 +80,38 @@ export function fetchPlaces() {
           }
 
           resolve(places);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+
+export function fetchPlaceById(placeId) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM places WHERE id = ?",
+        [placeId],
+        (_, result) => {
+          placeData = result.rows._array[0];
+
+          const place = new Place(
+            placeData.title,
+            placeData.imageUri,
+            {
+              address: placeData.address,
+              lat: placeData.lat,
+              lng: placeData.lng,
+            },
+            placeData.id
+          );
+
+          resolve(place);
         },
         (_, error) => {
           reject(error);
