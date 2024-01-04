@@ -8,9 +8,30 @@ import IconButton from "./components/UI/IconButton";
 import Map from "./screens/Map";
 import { Colors } from "./constants/colors";
 
+import { useEffect, useState } from "react";
+import { initSQLite } from "./util/database";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [dbInitialised, setDbInitialised] = useState(false);
+
+  useEffect(() => {
+    initSQLite()
+      .then(() => {
+        setDbInitialised(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  if (dbInitialised) {
+    SplashScreen.hideAsync();
+  }
+
   return (
     <>
       <StatusBar style='dark' />
